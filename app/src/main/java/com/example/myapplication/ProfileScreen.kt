@@ -88,7 +88,7 @@ fun ProfileScreen(onThemeToggle: () -> Unit, isDarkTheme: Boolean) {
                     color = MaterialTheme.colorScheme.surfaceVariant
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.l),
+                        painter = painterResource(id = R.drawable.profile),
                         contentDescription = "Profile Picture",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
