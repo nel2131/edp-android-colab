@@ -149,7 +149,7 @@ fun InfoRow(icon: ImageVector, label: String, value: String) {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun ProfileScreenPreview() {
     MyApplicationTheme {
         ProfileScreen("Android")
     }
