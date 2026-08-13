@@ -30,7 +30,7 @@ class ProfileViewModel : ViewModel() {
 
     fun addSkill() {
         val skill = _uiState.value.newSkill.trim()
-        if (skill.isEmpty()) return
+        if (skill.isEmpty() || _uiState.value.skills.contains(skill)) return
         _uiState.update { current ->
             current.copy(
                 skills = current.skills + skill,
@@ -43,6 +43,10 @@ class ProfileViewModel : ViewModel() {
         _uiState.update { current ->
             current.copy(skills = current.skills - skill)
         }
+    }
+
+    fun resetForm() {
+        _uiState.update { ProfileUiState() }
     }
 
     fun showPreview() = _uiState.update { it.copy(isPreview = true) }

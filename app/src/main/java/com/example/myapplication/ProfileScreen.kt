@@ -94,9 +94,18 @@ fun ProfileForm(state: ProfileUiState, viewModel: ProfileViewModel) {
         Spacer(Modifier.height(20.dp))
         Button(
             onClick = { viewModel.showPreview() },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            enabled = state.name.isNotBlank() && state.email.isNotBlank()
         ) {
             Text("Preview")
+        }
+
+        Spacer(Modifier.height(8.dp))
+        OutlinedButton(
+            onClick = { viewModel.resetForm() },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Clear All")
         }
     }
 }
