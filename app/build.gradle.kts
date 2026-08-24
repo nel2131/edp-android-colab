@@ -38,6 +38,12 @@ android {
 }
 
 dependencies {
+    // Navigation for Compose  (Lecture 8)
+    implementation("androidx.navigation:navigation-compose:2.9.8")
+
+    // ViewModel + safe state collection in Compose  (Lecture 9)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.10.0")
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
