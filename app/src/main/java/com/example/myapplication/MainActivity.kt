@@ -6,11 +6,22 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.RssFeed
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
@@ -18,39 +29,38 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MyApplicationTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+            val viewModel: MainViewModel = viewModel()
+            val darkTheme by viewModel.darkTheme.collectAsStateWithLifecycle(initialValue = false)
+            MyApplicationTheme(darkTheme = darkTheme) {
+                MySocialApp(viewModel)
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier
-            .padding(all = 16.dp)
-            .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.onSurfaceVariant),
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "Hello $name",
-            textAlign = TextAlign.Center,
-            modifier = modifier.fillMaxWidth()
-        )
-    }
-}
+fun MySocialApp(viewModel: MainViewModel) {
+    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
+    val tabs = listOf("Posts" to Icons.Filled.RssFeed, "Profile" to Icons.Filled.Person)
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MyApplicationTheme {
-        Greeting("Android")
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+        bottomBar = {
+            NavigationBar {
+                tabs.forEachIndexed { index, (label, icon) ->
+                    NavigationBarItem(
+                        selected = selectedTab == index,
+                        onClick = { selectedTab = index },
+                        icon = { Icon(icon, contentDescription = label) },
+                        label = { Text(label) }
+                    )
+                }
+            }
+        }
+    ) { innerPadding ->
+        when (selectedTab) {
+            0 -> PostsScreen(viewModel, Modifier.padding(innerPadding))
+            else -> ProfileScreen(viewModel, Modifier.padding(innerPadding))
+        }
     }
 }
