@@ -36,7 +36,7 @@ fun ProfileScreen(postsVm: PostsViewModel, themeVm: ThemeViewModel) {
         Icon(Icons.Default.AccountCircle, null, Modifier.size(96.dp))
         Spacer(Modifier.height(8.dp))
         Text("Leunel Valmoria", style = MaterialTheme.typography.headlineSmall)
-        Text("@nel2131", style = MaterialTheme.typography.bodyMedium)
+        Text("llvalmoria42157@liceo.edu.ph", style = MaterialTheme.typography.bodyMedium)
         Text("BSIT-3 · Liceo de Cagayan University",
             style = MaterialTheme.typography.bodySmall)
         Spacer(Modifier.height(16.dp))
