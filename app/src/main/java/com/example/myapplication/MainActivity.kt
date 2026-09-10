@@ -4,11 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.RssFeed
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -22,6 +22,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.ui.AppViewModelFactory
+import com.example.myapplication.ui.PostsScreen
+import com.example.myapplication.ui.PostsViewModel
+import com.example.myapplication.ui.ProfileScreen
+import com.example.myapplication.ui.ThemeViewModel
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
@@ -29,38 +34,40 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val viewModel: MainViewModel = viewModel()
-            val darkTheme by viewModel.darkTheme.collectAsStateWithLifecycle(initialValue = false)
-            MyApplicationTheme(darkTheme = darkTheme) {
-                MySocialApp(viewModel)
+            val factory = AppViewModelFactory(applicationContext)
+            val postsVm: PostsViewModel = viewModel(factory = factory)
+            val themeVm: ThemeViewModel = viewModel(factory = factory)
+
+            val darkTheme by themeVm.isDarkTheme.collectAsStateWithLifecycle()
+
+            MyApplicationTheme(darkTheme = darkTheme, dynamicColor = false) {
+                MySocialApp(postsVm, themeVm)
             }
         }
     }
 }
 
 @Composable
-fun MySocialApp(viewModel: MainViewModel) {
-    var selectedTab by rememberSaveable { mutableIntStateOf(0) }
-    val tabs = listOf("Posts" to Icons.Filled.RssFeed, "Profile" to Icons.Filled.Person)
-
+fun MySocialApp(postsVm: PostsViewModel, themeVm: ThemeViewModel) {
+    var tab by rememberSaveable { mutableIntStateOf(0) }
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
         bottomBar = {
             NavigationBar {
-                tabs.forEachIndexed { index, (label, icon) ->
-                    NavigationBarItem(
-                        selected = selectedTab == index,
-                        onClick = { selectedTab = index },
-                        icon = { Icon(icon, contentDescription = label) },
-                        label = { Text(label) }
-                    )
-                }
+                NavigationBarItem(
+                    selected = tab == 0, onClick = { tab = 0 },
+                    icon = { Icon(Icons.Default.Home, null) },
+                    label = { Text("Posts") },
+                )
+                NavigationBarItem(
+                    selected = tab == 1, onClick = { tab = 1 },
+                    icon = { Icon(Icons.Default.Person, null) },
+                    label = { Text("Profile") },
+                )
             }
         }
-    ) { innerPadding ->
-        when (selectedTab) {
-            0 -> PostsScreen(viewModel, Modifier.padding(innerPadding))
-            else -> ProfileScreen(viewModel, Modifier.padding(innerPadding))
+    ) { padding ->
+        Box(Modifier.padding(padding)) {
+            if (tab == 0) PostsScreen(postsVm) else ProfileScreen(postsVm, themeVm)
         }
     }
 }
